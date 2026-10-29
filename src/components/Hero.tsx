@@ -90,7 +90,7 @@ export default function Hero() {
       clearTimeout(timer);
       stage.classList.remove("is-glitching");
     };
-  }, [hero.revealImage]);
+  }, [hero.revealImage, hero.showVisual]);
 
   // Particle background animation
   useEffect(() => {
@@ -174,6 +174,11 @@ export default function Hero() {
     document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const { showVisual, showContent } = hero;
+  if (!showVisual && !showContent) return null;
+  // Image alone on a phone: show it twice as wide (sides cropped) instead of a tiny strip
+  const mobileWide = showContent ? "" : " max-sm:w-[200%] max-sm:max-w-none";
+
   return (
     <section
       id="home"
@@ -187,19 +192,31 @@ export default function Hero() {
       <div className="absolute top-1/3 -right-20 w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full bg-[#5C5470] opacity-30 blur-[160px] pointer-events-none" />
 
       {/* Watermark Typographic Branding */}
+      {showVisual && (
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
         <span className="font-display font-black text-[15vw] md:text-[14vw] uppercase tracking-tighter text-[var(--text-main)]/[0.03] leading-none whitespace-nowrap">
           {general.name.toUpperCase()}
         </span>
       </div>
+      )}
 
       {/* =========================================================================
-          LEFT HERO CONTENT — mobile: centered full-screen, desktop: absolute left
+          HERO CONTENT — next to the image: mobile centred, desktop absolute left.
+          Without the image: centred at every size.
           ========================================================================= */}
-      <div className="relative md:absolute md:left-8 lg:left-14 xl:left-24 md:top-28 z-30 w-full md:max-w-md lg:max-w-xl pointer-events-none
+      {showContent && (
+      <div
+        className={
+          showVisual
+            ? `relative md:absolute md:left-8 lg:left-14 xl:left-24 md:top-28 z-30 w-full md:max-w-md lg:max-w-xl pointer-events-none
         flex flex-col items-center text-center md:items-start md:text-left
         min-h-[100svh] md:min-h-0 justify-center md:justify-start
-        px-6 sm:px-10 md:px-0 pt-20 pb-10 md:pt-0 md:pb-0">
+        px-6 sm:px-10 md:px-0 pt-20 pb-10 md:pt-0 md:pb-0`
+            : `relative z-30 w-full max-w-xl mx-auto pointer-events-none
+        flex flex-col items-center text-center min-h-[100svh] justify-center
+        px-6 sm:px-10 pt-24 pb-16`
+        }
+      >
 
         {/* Live Availability Status Pill */}
         {general.availableForWork && (
@@ -306,18 +323,22 @@ export default function Hero() {
           <SocialDock />
         </motion.div>
       </div>
+      )}
 
       {/* =========================================================================
           RIGHT FLOATING STAT CARDS — mini graphs, float and can be dragged
           ========================================================================= */}
-      <FloatingStats stats={heroStats} />
+      {showContent && <FloatingStats stats={heroStats} />}
 
       {/* =========================================================================
           IMAGE STAGE: AUTOMATIC GLITCH BLINK
           ========================================================================= */}
+      {showVisual && (
       <div
         ref={stageRef}
-        className="glitch-stage relative w-full h-[65vh] sm:h-[68vh] md:h-screen hidden md:flex items-end justify-center select-none z-10"
+        className={`glitch-stage relative w-full items-end justify-center select-none z-10 ${
+          showContent ? "h-[65vh] sm:h-[68vh] md:h-screen hidden md:flex" : "h-[100svh] md:h-screen flex"
+        }`}
       >
         {/* Mobile: subtle radial glow behind character */}
         <div className="absolute inset-0 pointer-events-none md:hidden z-0">
@@ -326,7 +347,7 @@ export default function Hero() {
 
         {/* 1. Base portrait image */}
         <div className="glitch-base absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none z-10">
-          <div className="relative w-full sm:w-[88%] md:w-[90%] h-[100%] sm:h-[92%] max-w-[1550px]">
+          <div className={`relative w-full sm:w-[88%] md:w-[90%] h-[100%] sm:h-[92%] max-w-[1550px] shrink-0${mobileWide}`}>
             {hero.portraitImage && (
             <Image
               src={hero.portraitImage}
@@ -349,7 +370,7 @@ export default function Hero() {
               aria-hidden={layer !== "glitch-main"}
               className={`glitch-layer ${layer} absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none z-20`}
             >
-              <div className="relative w-full sm:w-[88%] md:w-[90%] h-[100%] sm:h-[92%] max-w-[1550px]">
+              <div className={`relative w-full sm:w-[88%] md:w-[90%] h-[100%] sm:h-[92%] max-w-[1550px] shrink-0${mobileWide}`}>
                 <Image
                   src={hero.revealImage}
                   unoptimized={!canOptimize(hero.revealImage)}
@@ -369,6 +390,7 @@ export default function Hero() {
         <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[var(--bg-deep)] to-transparent pointer-events-none z-25 md:hidden" />
 
       </div>
+      )}
 
       {/* Bottom Center Animated Scroll Indicator */}
       <motion.button

@@ -127,6 +127,23 @@ export function HeroEditor({ value, onChange }: EditorProps<HeroContent>) {
   const set = makeSetter(value, onChange);
   return (
     <>
+      <Card title="What to show" description="Turn either part on or off. If both are off, the hero section is hidden.">
+        <Toggle
+          label="Image + background name"
+          checked={value.showVisual}
+          onChange={set("showVisual")}
+          hint="Your portrait with the glitch effect, and the big faded name behind it."
+        />
+        <Toggle
+          label="Content"
+          checked={value.showContent}
+          onChange={set("showContent")}
+          hint="Name, typewriter, tagline, buttons, stat cards and social icons. Centred when the image is off."
+        />
+        {!value.showVisual && !value.showContent && (
+          <p className="text-[11px] text-amber-500">Both are off — the hero section will not appear on the site.</p>
+        )}
+      </Card>
       <Card title="Text">
         <TagsInput
           label="Typewriter roles"

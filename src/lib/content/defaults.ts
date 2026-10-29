@@ -38,6 +38,8 @@ export const defaultContent: SiteContent = {
   },
 
   hero: {
+    showVisual: true,
+    showContent: true,
     roles: [
       "Graphic Designer",
       "Brand Identity Specialist",

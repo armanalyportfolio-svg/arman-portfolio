@@ -27,6 +27,8 @@ export type SeoContent = {
 };
 
 export type HeroContent = {
+  showVisual: boolean;
+  showContent: boolean;
   roles: string[];
   tagline: string;
   keySkills: string[];
