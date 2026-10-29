@@ -32,7 +32,6 @@ export type HeroContent = {
   keySkills: string[];
   portraitImage: string;
   revealImage: string;
-  revealHint: string;
 };
 
 export type Skill = { name: string; tag: string; level: number };

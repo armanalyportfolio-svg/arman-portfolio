@@ -30,6 +30,9 @@
   --gradient-end: #5C5470;
   --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
   --nav-bg: rgba(42, 36, 56, 0.75);
+  --symbiote: #0E0B14;
+  --glitch-red: #ff2a6d;
+  --glitch-cyan: #05d9e8;
 }
 
 /* Light Theme Tokens */
@@ -51,6 +54,7 @@
   --gradient-end: #5C5470;
   --card-shadow: 0 10px 30px -10px rgba(92, 84, 112, 0.15);
   --nav-bg: rgba(246, 245, 249, 0.85);
+  --symbiote: #2A2438;
 }
 
 * {
@@ -171,9 +175,99 @@ section {
   animation: borderRotate 4s linear infinite;
 }
 
-/* Hero venom effect */
-.venom-overlay {
-  mix-blend-mode: multiply;
+/* Hero glitch blink — Hero.tsx adds .is-glitching to .glitch-stage for 750ms */
+.glitch-layer,
+.glitch-scanlines {
+  opacity: 0;
+}
+
+.glitch-red {
+  filter: sepia(1) saturate(8) hue-rotate(-50deg) brightness(1.1);
+  mix-blend-mode: screen;
+}
+
+.glitch-cyan {
+  filter: sepia(1) saturate(8) hue-rotate(140deg) brightness(1.1);
+  mix-blend-mode: screen;
+}
+
+.glitch-scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.06) 0px,
+    rgba(255, 255, 255, 0.06) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+
+.is-glitching .glitch-base {
+  animation: glitch-base 0.75s steps(1, end);
+}
+.is-glitching .glitch-main {
+  animation: glitch-main 0.75s steps(1, end);
+}
+.is-glitching .glitch-red {
+  animation: glitch-split 0.75s steps(1, end);
+  --split: -10px;
+}
+.is-glitching .glitch-cyan {
+  animation: glitch-split 0.75s steps(1, end);
+  --split: 10px;
+}
+.is-glitching .glitch-scanlines {
+  animation: glitch-scan 0.75s steps(1, end);
+}
+
+/* Original portrait: jitters, then hides while the reveal image is fully shown */
+@keyframes glitch-base {
+  0%   { transform: none; opacity: 1; }
+  6%   { transform: translateX(-6px) skewX(4deg); }
+  12%  { transform: translateX(5px); clip-path: inset(40% 0 30% 0); }
+  18%  { transform: none; clip-path: none; }
+  30%  { opacity: 0; }
+  52%  { opacity: 1; transform: translateX(4px); }
+  58%  { transform: none; }
+  80%  { transform: translateX(-3px) skewX(-3deg); }
+  86%  { transform: none; }
+  100% { transform: none; opacity: 1; }
+}
+
+/* Reveal image: sliced flashes, a full blink, then a last flicker */
+@keyframes glitch-main {
+  0%   { opacity: 0; }
+  8%   { opacity: 1; clip-path: inset(10% 0 62% 0); transform: translateX(-14px); }
+  14%  { opacity: 1; clip-path: inset(55% 0 18% 0); transform: translateX(12px); }
+  20%  { opacity: 0; }
+  30%  { opacity: 1; clip-path: none; transform: none; }
+  42%  { opacity: 1; clip-path: inset(28% 0 44% 0); transform: translateX(-8px); }
+  46%  { opacity: 1; clip-path: none; transform: none; }
+  52%  { opacity: 0; }
+  76%  { opacity: 1; clip-path: inset(68% 0 6% 0); transform: translateX(9px); }
+  82%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Red / cyan ghosts offset to opposite sides (RGB split) */
+@keyframes glitch-split {
+  0%   { opacity: 0; }
+  8%   { opacity: 0.7; transform: translateX(var(--split)); clip-path: inset(12% 0 58% 0); }
+  14%  { opacity: 0.7; transform: translateX(calc(var(--split) * -1)); clip-path: inset(50% 0 22% 0); }
+  20%  { opacity: 0; }
+  30%  { opacity: 0.55; transform: translateX(var(--split)); clip-path: none; }
+  46%  { opacity: 0.4; transform: translateX(calc(var(--split) * 0.5)); }
+  52%  { opacity: 0; }
+  76%  { opacity: 0.6; transform: translateX(var(--split)); clip-path: inset(66% 0 8% 0); }
+  82%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes glitch-scan {
+  0%   { opacity: 0; }
+  6%   { opacity: 1; }
+  52%  { opacity: 0.6; }
+  84%  { opacity: 0; }
+  100% { opacity: 0; }
 }
 
 /* Portfolio card hover */
@@ -194,4 +288,122 @@ section {
   background: linear-gradient(90deg, var(--bg-surface) 25%, #5C5470 50%, var(--bg-surface) 75%);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite;
+}
+
+/* =============================================================================
+   Symbiote (Venom) accents — see components/Symbiote.tsx
+   ============================================================================= */
+
+/* Glitch heading: two coloured copies of the text, sliced and shifted */
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: none;
+  pointer-events: none;
+  opacity: 0;
+}
+.glitch-text::before {
+  -webkit-text-fill-color: var(--glitch-red);
+  color: var(--glitch-red);
+}
+.glitch-text::after {
+  -webkit-text-fill-color: var(--glitch-cyan);
+  color: var(--glitch-cyan);
+}
+.glitch-text.is-glitching::before,
+.glitch-text:hover::before {
+  animation: glitch-text-a 0.7s steps(1, end);
+}
+.glitch-text.is-glitching::after,
+.glitch-text:hover::after {
+  animation: glitch-text-b 0.7s steps(1, end);
+}
+
+@keyframes glitch-text-a {
+  0%   { opacity: 0; }
+  10%  { opacity: 0.8; transform: translate(-4px, 1px); clip-path: inset(15% 0 55% 0); }
+  25%  { opacity: 0.8; transform: translate(3px, -1px); clip-path: inset(60% 0 10% 0); }
+  40%  { opacity: 0; }
+  55%  { opacity: 0.7; transform: translate(-2px, 0); clip-path: inset(35% 0 40% 0); }
+  70%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes glitch-text-b {
+  0%   { opacity: 0; }
+  10%  { opacity: 0.8; transform: translate(4px, -1px); clip-path: inset(55% 0 20% 0); }
+  25%  { opacity: 0.8; transform: translate(-3px, 1px); clip-path: inset(5% 0 70% 0); }
+  40%  { opacity: 0; }
+  55%  { opacity: 0.7; transform: translate(2px, 0); clip-path: inset(45% 0 30% 0); }
+  70%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Dripping divider: droplets fall from a few drip tips and fade out */
+.symbiote-drop {
+  opacity: 0;
+  animation: symbiote-drop 6s ease-in infinite;
+}
+@keyframes symbiote-drop {
+  0%, 70% { opacity: 0; transform: translateY(-6px) scale(0.6); }
+  74%     { opacity: 1; transform: translateY(0) scale(1); }
+  100%    { opacity: 0; transform: translateY(46px) scale(0.7); }
+}
+
+/* Gooey blobs: circles drift and the goo filter makes them merge */
+.symbiote-blob {
+  filter: drop-shadow(0 0 28px rgba(92, 84, 112, 0.45));
+}
+.symbiote-blob circle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.symbiote-blob .blob-a { animation: blob-a 14s ease-in-out infinite; }
+.symbiote-blob .blob-b { animation: blob-b 11s ease-in-out infinite; }
+.symbiote-blob .blob-c { animation: blob-c 13s ease-in-out infinite; }
+.symbiote-blob .blob-d { animation: blob-d 9s ease-in-out infinite; }
+
+@keyframes blob-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(18px, -14px) scale(1.08); }
+}
+@keyframes blob-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-70px, 40px) scale(0.85); }
+}
+@keyframes blob-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(80px, 30px) scale(1.1); }
+}
+@keyframes blob-d {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(30px, -85px) scale(0.75); }
+}
+
+/* Portfolio cards: short RGB-split glitch on hover */
+.group:hover .portfolio-glitch {
+  animation: card-glitch 0.45s steps(1, end);
+}
+@keyframes card-glitch {
+  0%   { filter: none; transform: none; }
+  15%  { filter: drop-shadow(-5px 0 var(--glitch-red)) drop-shadow(5px 0 var(--glitch-cyan)); transform: translateX(-4px); clip-path: inset(0 0 0 0); }
+  30%  { transform: translateX(4px); clip-path: inset(20% 0 45% 0); }
+  45%  { filter: drop-shadow(3px 0 var(--glitch-red)) drop-shadow(-3px 0 var(--glitch-cyan)); transform: none; clip-path: inset(0 0 0 0); }
+  60%  { transform: translateX(-2px); clip-path: inset(60% 0 15% 0); }
+  75%  { filter: none; transform: none; clip-path: none; }
+  100% { filter: none; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text::before,
+  .glitch-text::after,
+  .symbiote-drop,
+  .symbiote-blob circle,
+  .group:hover .portfolio-glitch {
+    animation: none !important;
+  }
 }

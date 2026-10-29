@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useSocialProfiles } from "./SocialIcons";
 import { useSiteContent } from "./SiteContentProvider";
 import { formatPhone, whatsappUrl } from "@/lib/content/merge";
+import { GlitchHeading, SymbioteDivider, SymbioteBlob } from "./Symbiote";
 
 export default function Contact() {
   const { general, contact } = useSiteContent();
@@ -75,6 +76,8 @@ export default function Contact() {
 
   return (
     <section id="contact" className="py-20 md:py-28 bg-[var(--bg-surface)] relative overflow-hidden">
+      <SymbioteDivider from="deep" />
+      <SymbioteBlob className="absolute -bottom-28 -left-24 w-[380px] opacity-50 z-0" />
       {/* Background ambient glow */}
       <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-[#2A2438] opacity-30 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full bg-[#5C5470] opacity-15 blur-[80px] pointer-events-none" />
@@ -91,9 +94,7 @@ export default function Contact() {
           <p className="text-[var(--text-muted)] text-xs tracking-[0.3em] uppercase font-semibold mb-3">
             {contact.eyebrow}
           </p>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-4">
-            {contact.heading}
-          </h2>
+          <GlitchHeading className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-4">{contact.heading}</GlitchHeading>
           <p className="text-[var(--text-muted)] max-w-lg mx-auto text-sm md:text-base">
             {contact.subheading}
           </p>

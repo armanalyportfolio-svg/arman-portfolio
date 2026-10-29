@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useSiteContent } from "./SiteContentProvider";
 import { getServiceIcon } from "@/lib/content/service-icons";
+import { GlitchHeading, SymbioteDivider } from "./Symbiote";
 
 const containerVariants = {
   hidden: {},
@@ -24,6 +25,7 @@ export default function Services() {
 
   return (
     <section id="services" className="py-20 md:py-28 bg-[var(--bg-surface)] relative overflow-hidden">
+      <SymbioteDivider from="deep" />
       <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#2A2438] opacity-30 blur-[100px]" />
       <div className="absolute top-20 right-10 w-60 h-60 rounded-full bg-[#5C5470] opacity-15 blur-[80px]" />
 
@@ -39,9 +41,7 @@ export default function Services() {
           <p className="text-[var(--text-muted)] text-xs tracking-[0.3em] uppercase font-medium mb-3">
             {services.eyebrow}
           </p>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-4">
-            {services.heading}
-          </h2>
+          <GlitchHeading className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-4">{services.heading}</GlitchHeading>
           <p className="text-[var(--text-muted)] max-w-lg mx-auto text-sm md:text-base">
             {services.subheading}
           </p>

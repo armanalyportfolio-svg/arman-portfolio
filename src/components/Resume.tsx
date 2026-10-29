@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Briefcase, GraduationCap, Award } from "lucide-react";
 import { useSiteContent } from "./SiteContentProvider";
+import { GlitchHeading, SymbioteDivider } from "./Symbiote";
 
 const itemVariants = {
   hidden: { opacity: 0, x: -30 },
@@ -14,6 +15,7 @@ export default function Resume() {
 
   return (
     <section id="resume" className="py-20 md:py-28 bg-[var(--bg-surface)] relative overflow-hidden">
+      <SymbioteDivider from="deep" />
       <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#2A2438] opacity-30 blur-[100px]" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
@@ -28,9 +30,7 @@ export default function Resume() {
           <p className="text-[var(--text-muted)] text-sm tracking-[0.3em] uppercase font-medium mb-3">
             {resume.eyebrow}
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold gradient-text">
-            {resume.heading}
-          </h2>
+          <GlitchHeading className="font-display text-4xl md:text-5xl font-bold gradient-text">{resume.heading}</GlitchHeading>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-16">

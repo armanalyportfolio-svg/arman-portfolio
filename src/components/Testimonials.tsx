@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 import { useSiteContent } from "./SiteContentProvider";
+import { GlitchHeading, SymbioteDivider } from "./Symbiote";
 
 function initials(name: string) {
   return name
@@ -40,6 +41,7 @@ export default function Testimonials() {
 
   return (
     <section id="testimonials" className="py-20 md:py-28 bg-[var(--bg-deep)] relative overflow-hidden">
+      <SymbioteDivider from="surface" />
       <div className="absolute bottom-20 right-0 w-72 h-72 rounded-full bg-[#352F44] opacity-25 blur-[100px]" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
@@ -54,9 +56,7 @@ export default function Testimonials() {
           <p className="text-[var(--text-muted)] text-xs tracking-[0.3em] uppercase font-semibold mb-3">
             {section.eyebrow}
           </p>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text">
-            {section.heading}
-          </h2>
+          <GlitchHeading className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text">{section.heading}</GlitchHeading>
         </motion.div>
 
         {/* Carousel */}

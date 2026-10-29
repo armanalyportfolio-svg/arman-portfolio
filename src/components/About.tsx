@@ -7,6 +7,7 @@ import Image from "next/image";
 import { canOptimize } from "@/lib/content/image";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { useSiteContent } from "./SiteContentProvider";
+import { GlitchHeading, SymbioteBlob } from "./Symbiote";
 
 // Renders **bold** segments typed in the admin panel as highlighted text.
 function RichText({ text }: { text: string }) {
@@ -50,6 +51,7 @@ export default function About() {
 
   return (
     <section id="about" className="py-20 md:py-28 bg-[var(--bg-deep)] relative overflow-hidden">
+      <SymbioteBlob className="absolute -top-16 -right-28 w-[420px] opacity-60 z-0" />
       {/* Background ambient lighting */}
       <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#352F44] opacity-25 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#5C5470] opacity-15 blur-[100px] pointer-events-none" />
@@ -66,9 +68,7 @@ export default function About() {
           <p className="text-[var(--text-muted)] text-xs tracking-[0.3em] uppercase font-semibold mb-3">
             {about.eyebrow}
           </p>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-4">
-            {about.heading}
-          </h2>
+          <GlitchHeading className="font-display text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-4">{about.heading}</GlitchHeading>
           <p className="text-[var(--text-muted)] max-w-xl mx-auto text-sm md:text-base">
             {about.subheading}
           </p>

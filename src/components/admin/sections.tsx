@@ -143,13 +143,12 @@ export function HeroEditor({ value, onChange }: EditorProps<HeroContent>) {
       <Card title="Images" description="Use transparent PNG cut-outs for the best look. Shown on tablet and desktop.">
         <MediaInput label="Main portrait" value={value.portraitImage} onChange={set("portraitImage")} folder="hero" />
         <MediaInput
-          label="Hover-reveal image (optional)"
+          label="Glitch image (optional)"
           value={value.revealImage}
           onChange={set("revealImage")}
           folder="hero"
-          hint="Revealed under the cursor. Leave empty to turn the effect off."
+          hint="The portrait glitches into this image every few seconds. Leave empty to turn the effect off."
         />
-        <TextInput label="Hover hint text" value={value.revealHint} onChange={set("revealHint")} />
       </Card>
     </>
   );

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useSiteContent } from "./SiteContentProvider";
 import type { PortfolioItem } from "@/lib/content/types";
+import { GlitchHeading, SymbioteDivider } from "./Symbiote";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -118,6 +119,7 @@ export default function Portfolio() {
 
   return (
     <section id="portfolio" className="py-28 bg-[var(--bg-deep)] relative overflow-hidden">
+      <SymbioteDivider from="surface" />
       {/* Animated Floating Ambient Background Mesh */}
       <motion.div
         animate={{
@@ -152,9 +154,7 @@ export default function Portfolio() {
             <span>{portfolio.eyebrow}</span>
           </div>
 
-          <h2 className="font-display text-4xl md:text-5xl font-black gradient-text mb-4 tracking-tight">
-            {portfolio.heading}
-          </h2>
+          <GlitchHeading className="font-display text-4xl md:text-5xl font-black gradient-text mb-4 tracking-tight">{portfolio.heading}</GlitchHeading>
           <p className="text-[var(--text-muted)] max-w-xl mx-auto text-sm md:text-base leading-relaxed">
             {portfolio.subheading}
           </p>
@@ -308,7 +308,7 @@ export default function Portfolio() {
                         ? "(max-width: 1024px) 100vw, 66vw"
                         : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     }
-                    className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
+                    className="portfolio-glitch object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
                   />
 
                   {/* Guaranteed High-Contrast Dark Gradient Backing (Ensures 100% Readability) */}

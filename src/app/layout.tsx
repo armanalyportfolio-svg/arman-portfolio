@@ -47,12 +47,12 @@ export default function RootLayout({
             __html: `
               try {
                 const saved = localStorage.getItem('arman-portfolio-theme');
-                if (saved === 'light') {
-                  document.documentElement.classList.add('light');
-                  document.documentElement.setAttribute('data-theme', 'light');
-                } else {
+                if (saved === 'dark') {
                   document.documentElement.classList.add('dark');
                   document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.setAttribute('data-theme', 'light');
                 }
               } catch (e) {}
             `,

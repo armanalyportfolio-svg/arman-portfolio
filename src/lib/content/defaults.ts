@@ -49,7 +49,6 @@ export const defaultContent: SiteContent = {
     keySkills: ["Illustrator", "Photoshop", "Canva Pro", "Large-Format", "AI Art"],
     portraitImage: "/assets/hero-img-latest.png",
     revealImage: "/assets/hero-venom-img-latest.png",
-    revealHint: "Hover character to reveal",
   },
 
   about: {

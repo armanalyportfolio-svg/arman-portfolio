@@ -4,13 +4,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { canOptimize } from "@/lib/content/image";
 import { motion } from "framer-motion";
-import { ArrowRight, ChevronDown } from "lucide-react";
-import { useSocialProfiles } from "./SocialIcons";
+import { ChevronDown } from "lucide-react";
+import { CtaCapsule, FloatingStats, InlineStats, SocialDock } from "./HeroWidgets";
 import { useSiteContent } from "./SiteContentProvider";
 import { whatsappUrl } from "@/lib/content/merge";
 
 const PARTICLES_COUNT = 40;
-const REVEAL_RADIUS = 240;
 
 interface Particle {
   x: number;
@@ -24,9 +23,13 @@ interface Particle {
 
 const COLORS = ["#DBD8E3", "#5C5470", "#352F44"];
 
+// Glitch timing (ms): keep GLITCH_DURATION in sync with the CSS animations in globals.css
+const GLITCH_DURATION = 750;
+const GLITCH_MIN_GAP = 2500;
+const GLITCH_RANDOM_GAP = 3000;
+
 export default function Hero() {
   const { general, hero, about, contact } = useSiteContent();
-  const socialProfiles = useSocialProfiles();
   const roles = useMemo(
     () => (hero.roles.length ? hero.roles : [general.role]),
     [hero.roles, general.role]
@@ -34,15 +37,6 @@ export default function Hero() {
   const heroStats = about.stats.slice(0, 3);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const venomRef = useRef<HTMLDivElement>(null);
-  const glowRef = useRef<HTMLDivElement>(null);
-  const reticleRef = useRef<HTMLDivElement>(null);
-
-  // High-performance direct coordinates via requestAnimationFrame (Zero React re-render lag)
-  const targetPos = useRef({ x: -1000, y: -1000 });
-  const currentPos = useRef({ x: -1000, y: -1000 });
-  const isInside = useRef(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
 
   // Typewriter effect state
   const [displayText, setDisplayText] = useState("");
@@ -73,39 +67,30 @@ export default function Hero() {
     return () => clearTimeout(timer);
   }, [displayText, isDeleting, typeIndex, roles]);
 
-  // Smooth 120fps Lerp animation loop for venom reveal mask and cursor reticle
+  // Glitch blink: every few seconds the portrait glitches into the reveal image.
+  // Toggles a class on the stage so no React re-render is needed.
   useEffect(() => {
-    let animId: number;
+    const stage = stageRef.current;
+    if (!stage || !hero.revealImage) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const updatePosition = () => {
-      if (isInside.current) {
-        const lerpFactor = 0.16;
-        currentPos.current.x += (targetPos.current.x - currentPos.current.x) * lerpFactor;
-        currentPos.current.y += (targetPos.current.y - currentPos.current.y) * lerpFactor;
-
-        const x = Math.round(currentPos.current.x * 10) / 10;
-        const y = Math.round(currentPos.current.y * 10) / 10;
-
-        if (venomRef.current) {
-          const mask = `radial-gradient(circle ${REVEAL_RADIUS}px at ${x}px ${y}px, black 0%, rgba(0,0,0,0.95) 45%, rgba(0,0,0,0.3) 75%, transparent 100%)`;
-          venomRef.current.style.maskImage = mask;
-          venomRef.current.style.webkitMaskImage = mask;
-        }
-
-        if (glowRef.current) {
-          glowRef.current.style.background = `radial-gradient(circle ${REVEAL_RADIUS + 70}px at ${x}px ${y}px, rgba(92, 84, 112, 0.45) 0%, rgba(53, 47, 68, 0.25) 50%, transparent 100%)`;
-        }
-
-        if (reticleRef.current) {
-          reticleRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-        }
-      }
-      animId = requestAnimationFrame(updatePosition);
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      timer = setTimeout(() => {
+        stage.classList.add("is-glitching");
+        timer = setTimeout(() => {
+          stage.classList.remove("is-glitching");
+          schedule();
+        }, GLITCH_DURATION);
+      }, GLITCH_MIN_GAP + Math.random() * GLITCH_RANDOM_GAP);
     };
+    schedule();
 
-    animId = requestAnimationFrame(updatePosition);
-    return () => cancelAnimationFrame(animId);
-  }, []);
+    return () => {
+      clearTimeout(timer);
+      stage.classList.remove("is-glitching");
+    };
+  }, [hero.revealImage]);
 
   // Particle background animation
   useEffect(() => {
@@ -176,32 +161,6 @@ export default function Hero() {
       window.removeEventListener("resize", resize);
     };
   }, []);
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const rect = stageRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    if (!isInside.current) {
-      isInside.current = true;
-      currentPos.current = { x, y };
-      if (!hasInteracted) setHasInteracted(true);
-      if (venomRef.current) venomRef.current.style.opacity = "1";
-      if (glowRef.current) glowRef.current.style.opacity = "1";
-      if (reticleRef.current) reticleRef.current.style.opacity = "1";
-    }
-
-    targetPos.current = { x, y };
-  };
-
-  const handlePointerLeave = () => {
-    isInside.current = false;
-    if (venomRef.current) venomRef.current.style.opacity = "0";
-    if (glowRef.current) glowRef.current.style.opacity = "0";
-    if (reticleRef.current) reticleRef.current.style.opacity = "0";
-  };
 
   const scrollToPortfolio = () => {
     document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
@@ -311,144 +270,62 @@ export default function Hero() {
           ))}
         </motion.div>
 
-        {/* CTA Buttons — full width on mobile */}
+        {/* Call-to-action capsule */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
-          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pointer-events-auto mb-6 w-full md:w-auto"
+          className="pointer-events-auto mb-5"
         >
-          <motion.button
-            onClick={scrollToPortfolio}
-            whileHover={{ scale: 1.03, boxShadow: "0 0 35px rgba(219,216,227,0.35)" }}
-            whileTap={{ scale: 0.97 }}
-            className="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-[#DBD8E3] to-[#B0ABC0] text-[#1D1826] rounded-2xl font-extrabold text-sm tracking-wide flex items-center justify-center gap-2 shadow-2xl transition-all cursor-pointer"
-          >
-            <span>Explore Works</span>
-            <ArrowRight size={15} />
-          </motion.button>
-
-          <div className="flex gap-3 w-full sm:w-auto">
-            <motion.a
-              href={whatsappUrl(contact.whatsappNumber, contact.whatsappMessage)}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex-1 sm:flex-none px-5 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-300 shadow-xl shadow-emerald-950/40 cursor-pointer"
-            >
-              <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
-              <span>WhatsApp</span>
-            </motion.a>
-
-            <motion.button
-              onClick={scrollToContact}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex-1 sm:flex-none px-5 py-3.5 glass border border-[var(--border-subtle)] text-[var(--text-main)] rounded-2xl font-semibold text-sm tracking-wide hover:border-[#5C5470] transition-all duration-300 shadow-xl cursor-pointer"
-            >
-              Get In Touch
-            </motion.button>
-          </div>
+          <CtaCapsule
+            onExplore={scrollToPortfolio}
+            onContact={scrollToContact}
+            whatsappHref={
+              contact.whatsappNumber ? whatsappUrl(contact.whatsappNumber, contact.whatsappMessage) : undefined
+            }
+          />
         </motion.div>
 
-        {/* Stats Row — mobile only (lg+ uses floating cards on right) */}
+        {/* Compact stat cards — mobile / tablet (lg+ uses the floating cards) */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65, duration: 0.5 }}
-          className="flex items-center gap-3 mb-6 pointer-events-auto lg:hidden w-full"
+          className="pointer-events-auto mb-5 w-full max-w-md"
         >
-          {heroStats.map((s, i) => (
-            <div key={i} className="flex-1 glass rounded-2xl border border-[var(--border-subtle)] px-3 py-3 text-center">
-              <div className="font-display text-xl font-black text-[var(--text-main)] leading-none">{s.value}{s.suffix}</div>
-              <div className="text-[10px] text-[var(--text-muted)] font-mono mt-1">{s.label}</div>
-            </div>
-          ))}
+          <InlineStats stats={heroStats} />
         </motion.div>
 
-        {/* Social Icons Bar */}
+        {/* Social profiles dock */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6 }}
-          className="flex items-center gap-3 pointer-events-auto"
+          className="pointer-events-auto"
         >
-          <span className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-mono uppercase tracking-wider">
-            Follow:
-          </span>
-          <div className="flex items-center gap-2">
-            {socialProfiles.map((p) => {
-              const Icon = p.icon;
-              return (
-                <a
-                  key={p.name}
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={p.name}
-                  title={`${p.name} (${p.handle})`}
-                  className={`w-9 h-9 glass rounded-full flex items-center justify-center text-[var(--text-muted)] border border-[var(--border-subtle)] hover:text-[var(--text-main)] transition-all ${p.accent}`}
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              );
-            })}
-          </div>
+          <SocialDock />
         </motion.div>
       </div>
 
       {/* =========================================================================
-          RIGHT FLOATING STATS CARDS
+          RIGHT FLOATING STAT CARDS — mini graphs, float and can be dragged
           ========================================================================= */}
-      <motion.div
-        initial={{ opacity: 0, x: 25 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.7, duration: 0.7 }}
-        className="absolute right-6 lg:right-12 xl:right-16 top-32 lg:top-36 z-30 hidden lg:flex flex-col gap-3 pointer-events-none text-right"
-      >
-        {heroStats.map((s, i) => (
-          <div key={i} className="glass px-4 py-3 rounded-2xl border border-[var(--border-subtle)] backdrop-blur-md shadow-2xl bg-[var(--bg-surface)] text-right">
-            <div className="font-display text-2xl font-black text-[var(--text-main)]">{s.value}{s.suffix}</div>
-            <div className="text-[11px] text-[var(--text-main)] font-semibold">{s.label}</div>
-            <div className="text-[9px] text-[var(--text-muted)] font-mono">{s.detail}</div>
-          </div>
-        ))}
-      </motion.div>
+      <FloatingStats stats={heroStats} />
 
       {/* =========================================================================
-          IMAGE STAGE: INTERACTIVE HOVER VENOM REVEAL
+          IMAGE STAGE: AUTOMATIC GLITCH BLINK
           ========================================================================= */}
       <div
         ref={stageRef}
-        onPointerMove={handlePointerMove}
-        onPointerLeave={handlePointerLeave}
-        className="relative w-full h-[65vh] sm:h-[68vh] md:h-screen hidden md:flex items-end justify-center select-none z-10"
+        className="glitch-stage relative w-full h-[65vh] sm:h-[68vh] md:h-screen hidden md:flex items-end justify-center select-none z-10"
       >
         {/* Mobile: subtle radial glow behind character */}
         <div className="absolute inset-0 pointer-events-none md:hidden z-0">
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-[80%] rounded-full bg-[#5C5470]/20 blur-[80px]" />
         </div>
 
-        {/* Cursor-Following Reticle (Sci-fi Targeting Lens) */}
-        <div
-          ref={reticleRef}
-          className="absolute pointer-events-none z-30 w-12 h-12 rounded-full border-2 border-white/60 shadow-[0_0_25px_rgba(255,255,255,0.7)] flex items-center justify-center transition-opacity duration-200"
-          style={{ opacity: 0 }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-        </div>
-
-        {/* Ambient cursor-following glow effect */}
-        <div
-          ref={glowRef}
-          className="absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 z-0"
-        />
-
         {/* 1. Base portrait image */}
-        <div className="absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none z-10">
+        <div className="glitch-base absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none z-10">
           <div className="relative w-full sm:w-[88%] md:w-[90%] h-[100%] sm:h-[92%] max-w-[1550px]">
             {hero.portraitImage && (
             <Image
@@ -464,39 +341,33 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* 2. Venom image — revealed via radial mask on hover */}
-        {hero.revealImage && (
-        <div
-          ref={venomRef}
-          style={{
-            opacity: 0,
-            transition: "opacity 0.35s ease-out",
-          }}
-          className="absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none z-20 will-change-[mask-image,opacity]"
-        >
-          <div className="relative w-full sm:w-[88%] md:w-[90%] h-[100%] sm:h-[92%] max-w-[1550px]">
-            <Image
-              src={hero.revealImage}
-              unoptimized={!canOptimize(hero.revealImage)}
-              alt={`${general.name} - Alternate Portrait`}
-              fill
-              className="object-contain object-bottom filter brightness-110 drop-shadow-[0_25px_60px_rgba(92,84,112,0.9)]"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1550px"
-            />
-          </div>
-        </div>
-        )}
+        {/* 2. Reveal image — flashes in during the glitch, with RGB-split ghosts */}
+        {hero.revealImage &&
+          (["glitch-main", "glitch-red", "glitch-cyan"] as const).map((layer) => (
+            <div
+              key={layer}
+              aria-hidden={layer !== "glitch-main"}
+              className={`glitch-layer ${layer} absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none z-20`}
+            >
+              <div className="relative w-full sm:w-[88%] md:w-[90%] h-[100%] sm:h-[92%] max-w-[1550px]">
+                <Image
+                  src={hero.revealImage}
+                  unoptimized={!canOptimize(hero.revealImage)}
+                  alt={layer === "glitch-main" ? `${general.name} - Alternate Portrait` : ""}
+                  fill
+                  className="object-contain object-bottom"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1550px"
+                />
+              </div>
+            </div>
+          ))}
+
+        {/* Scanlines shown only while glitching */}
+        <div className="glitch-scanlines absolute inset-0 pointer-events-none z-30" />
 
         {/* Mobile: bottom fade blend into next section */}
         <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[var(--bg-deep)] to-transparent pointer-events-none z-25 md:hidden" />
 
-        {/* Desktop Hover Hint */}
-        {!hasInteracted && hero.revealImage && hero.revealHint && (
-          <div className="absolute top-4 md:top-24 left-1/2 -translate-x-1/2 z-40 hidden lg:flex glass px-3.5 py-1.5 rounded-full text-xs text-[#DBD8E3] border border-[#5C5470]/40 items-center gap-2 shadow-xl backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-            <span>{hero.revealHint}</span>
-          </div>
-        )}
       </div>
 
       {/* Bottom Center Animated Scroll Indicator */}

@@ -26,11 +26,11 @@ function applyThemeToDocument(t: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("arman-portfolio-theme") as Theme | null;
-    const initialTheme: Theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+    const initialTheme: Theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "light";
     // Sync React state with the theme the inline <head> script already applied.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setThemeState(initialTheme);

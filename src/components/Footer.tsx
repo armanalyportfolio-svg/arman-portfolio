@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowUp, Mail } from "lucide-react";
 import { useSocialProfiles } from "./SocialIcons";
 import { useSiteContent } from "./SiteContentProvider";
+import { SymbioteDivider } from "./Symbiote";
 
 const footerLinks = [
   { label: "Home", href: "#home" },
@@ -21,7 +22,8 @@ export default function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer className="bg-[var(--bg-deep)] border-t border-[var(--border-subtle)] py-14 px-6 relative overflow-hidden">
+    <footer className="bg-[var(--bg-deep)] pt-20 md:pt-28 pb-14 px-6 relative overflow-hidden">
+      <SymbioteDivider from="surface" />
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-between pb-10 border-b border-[var(--border-subtle)]">
           {/* Logo & Headline (5 Cols) */}
