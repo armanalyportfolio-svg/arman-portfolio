@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { getSiteContent } from "@/lib/content/get-content";
-import { whatsappUrl } from "@/lib/content/merge";
+import { verificationCode, whatsappUrl } from "@/lib/content/merge";
 import type { SiteContent } from "@/lib/content/types";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -19,6 +19,7 @@ import { getSiteUrl } from "@/lib/site-url";
 // Admin → SEO when there is one), so no images are listed here.
 export async function generateMetadata(): Promise<Metadata> {
   const { seo, general } = await getSiteContent();
+  const googleCode = verificationCode(seo.googleVerification ?? "");
 
   return {
     title: seo.title,
@@ -27,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: general.name, url: getSiteUrl() }],
     creator: general.name,
     alternates: { canonical: "/" },
-    verification: seo.googleVerification ? { google: seo.googleVerification } : undefined,
+    verification: googleCode ? { google: googleCode } : undefined,
     openGraph: {
       type: "profile",
       locale: "en_US",

@@ -16,6 +16,13 @@ export function mergeContent(rows: ContentRow[] | null | undefined): SiteContent
   return content;
 }
 
+// Accepts either the bare Search Console code or the whole
+// <meta name="google-site-verification" content="..."> tag and returns the code.
+export function verificationCode(value: string) {
+  const fromTag = value.match(/content\s*=\s*["']([^"']+)["']/i);
+  return (fromTag ? fromTag[1] : value).trim();
+}
+
 // Builds the wa.me link from the number saved in Contact settings.
 export function whatsappUrl(number: string, message?: string) {
   const digits = number.replace(/\D/g, "");

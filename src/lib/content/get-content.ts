@@ -15,10 +15,16 @@ export async function getSiteContent(): Promise<SiteContent> {
   if (!isSupabaseConfigured) return defaultContent;
 
   try {
+    // no-store: this function's own "use cache" entry is the only cache layer.
+    // Otherwise Next keeps the raw Supabase response in its fetch cache (15 min,
+    // untagged), and updateTag() after an admin save would re-read stale data.
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { auth: { persistSession: false } }
+      {
+        auth: { persistSession: false },
+        global: { fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }) },
+      }
     );
     const { data, error } = await supabase.from("site_content").select("key, data");
     if (error) throw error;

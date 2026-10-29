@@ -14,6 +14,7 @@ import type {
   TestimonialsContent,
 } from "@/lib/content/types";
 import { serviceIcons, getServiceIcon } from "@/lib/content/service-icons";
+import { verificationCode } from "@/lib/content/merge";
 import {
   Card,
   Grid,
@@ -121,7 +122,7 @@ export function SeoEditor({ value, onChange }: EditorProps<SeoContent>) {
       <TextInput
         label="Google Search Console verification code"
         value={value.googleVerification}
-        onChange={set("googleVerification")}
+        onChange={(v) => set("googleVerification")(verificationCode(v))}
         placeholder="e.g. abc123XYZ..."
         hint="In Search Console choose “HTML tag” and paste only the code inside content=“...”."
       />
