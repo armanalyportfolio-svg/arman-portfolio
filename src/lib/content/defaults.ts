@@ -17,7 +17,7 @@ export const defaultContent: SiteContent = {
   seo: {
     title: "Arman Ali | Graphic Designer Portfolio",
     description:
-      "Premium graphic design portfolio of Arman Ali — specializing in brand identity, business cards, large-format banners, social media creatives, and AI-assisted design. Based in Pakistan.",
+      "Arman Ali is a graphic designer in Karachi, Pakistan, creating logos, brand identities, business cards, banners, signage and AI-assisted designs.",
     keywords: [
       "Arman Ali",
       "Graphic Designer",
@@ -34,7 +34,8 @@ export const defaultContent: SiteContent = {
       "Canva",
       "AI Design",
     ],
-    ogImage: "/og-image.jpg",
+    ogImage: "",
+    googleVerification: "",
   },
 
   hero: {

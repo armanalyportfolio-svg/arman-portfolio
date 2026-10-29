@@ -24,6 +24,7 @@ export type SeoContent = {
   description: string;
   keywords: string[];
   ogImage: string;
+  googleVerification: string;
 };
 
 export type HeroContent = {

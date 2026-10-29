@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { getSiteUrl } from "@/lib/site-url";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,7 +20,7 @@ const spaceGrotesk = Space_Grotesk({
 // Title, description and social previews come from the SEO section in the
 // admin panel (see generateMetadata in app/page.tsx).
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://arman-portfolio.vercel.app"),
+  metadataBase: new URL(getSiteUrl()),
   title: "Arman Ali | Graphic Designer Portfolio",
   robots: {
     index: true,

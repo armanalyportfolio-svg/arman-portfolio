@@ -112,10 +112,18 @@ export function SeoEditor({ value, onChange }: EditorProps<SeoContent>) {
       />
       <TagsInput label="Keywords" value={value.keywords} onChange={set("keywords")} />
       <MediaInput
-        label="Share image (1200×630)"
+        label="Share image (1200×630, optional)"
         value={value.ogImage}
         onChange={set("ogImage")}
         folder="seo"
+        hint="JPG or PNG. Leave empty to use an auto-generated card with your name, role and photo."
+      />
+      <TextInput
+        label="Google Search Console verification code"
+        value={value.googleVerification}
+        onChange={set("googleVerification")}
+        placeholder="e.g. abc123XYZ..."
+        hint="In Search Console choose “HTML tag” and paste only the code inside content=“...”."
       />
     </Card>
   );
