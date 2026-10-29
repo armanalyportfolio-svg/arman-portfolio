@@ -26,8 +26,8 @@ export default function LoginForm({ error: initialError }: { error?: string }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-[var(--bg-deep)] relative overflow-hidden">
-      <div className="absolute top-1/4 -left-32 w-[420px] h-[420px] rounded-full bg-[#5C5470] opacity-20 blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 -right-32 w-[420px] h-[420px] rounded-full bg-[#352F44] opacity-40 blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/4 -left-32 w-[420px] h-[420px] rounded-full bg-[radial-gradient(circle,#5C5470_0%,transparent_70%)] opacity-20 pointer-events-none" />
+      <div className="absolute bottom-0 -right-32 w-[420px] h-[420px] rounded-full bg-[radial-gradient(circle,#352F44_0%,transparent_70%)] opacity-40 pointer-events-none" />
 
       <form
         onSubmit={handleSubmit}

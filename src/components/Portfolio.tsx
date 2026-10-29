@@ -128,7 +128,7 @@ export default function Portfolio() {
           x: [0, 50, 0],
         }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-20 -left-20 w-[550px] h-[550px] rounded-full bg-[#352F44] blur-[140px] pointer-events-none"
+        className="absolute top-20 -left-20 w-[550px] h-[550px] rounded-full bg-[radial-gradient(circle,#352F44_0%,transparent_70%)] pointer-events-none"
       />
       <motion.div
         animate={{
@@ -137,7 +137,7 @@ export default function Portfolio() {
           y: [0, -60, 0],
         }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-20 -right-20 w-[600px] h-[600px] rounded-full bg-[#5C5470] blur-[150px] pointer-events-none"
+        className="absolute bottom-20 -right-20 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,#5C5470_0%,transparent_70%)] pointer-events-none"
       />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">

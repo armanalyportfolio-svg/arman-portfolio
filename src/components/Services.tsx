@@ -26,8 +26,8 @@ export default function Services() {
   return (
     <section id="services" className="py-20 md:py-28 bg-[var(--bg-surface)] relative overflow-hidden">
       <SymbioteDivider from="deep" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#2A2438] opacity-30 blur-[100px]" />
-      <div className="absolute top-20 right-10 w-60 h-60 rounded-full bg-[#5C5470] opacity-15 blur-[80px]" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[radial-gradient(circle,#2A2438_0%,transparent_70%)] opacity-30" />
+      <div className="absolute top-20 right-10 w-60 h-60 rounded-full bg-[radial-gradient(circle,#5C5470_0%,transparent_70%)] opacity-15" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}

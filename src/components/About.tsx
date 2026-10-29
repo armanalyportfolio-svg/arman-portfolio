@@ -53,8 +53,8 @@ export default function About() {
     <section id="about" className="py-20 md:py-28 bg-[var(--bg-deep)] relative overflow-hidden">
       <SymbioteBlob className="absolute -top-16 -right-28 w-[420px] opacity-60 z-0" />
       {/* Background ambient lighting */}
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#352F44] opacity-25 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#5C5470] opacity-15 blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[radial-gradient(circle,#352F44_0%,transparent_70%)] opacity-25 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[radial-gradient(circle,#5C5470_0%,transparent_70%)] opacity-15 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}

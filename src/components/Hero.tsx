@@ -188,8 +188,8 @@ export default function Hero() {
       <canvas ref={canvasRef} id="particle-canvas" className="pointer-events-none absolute inset-0 z-0" />
 
       {/* Atmospheric ambient lighting backdrops */}
-      <div className="absolute top-1/4 -left-20 w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full bg-[#352F44] opacity-35 blur-[160px] pointer-events-none" />
-      <div className="absolute top-1/3 -right-20 w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full bg-[#5C5470] opacity-30 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/4 -left-20 w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full bg-[radial-gradient(circle,#352F44_0%,transparent_70%)] opacity-35 pointer-events-none" />
+      <div className="absolute top-1/3 -right-20 w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full bg-[radial-gradient(circle,#5C5470_0%,transparent_70%)] opacity-30 pointer-events-none" />
 
       {/* Watermark Typographic Branding */}
       {showVisual && (
@@ -342,7 +342,7 @@ export default function Hero() {
       >
         {/* Mobile: subtle radial glow behind character */}
         <div className="absolute inset-0 pointer-events-none md:hidden z-0">
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-[80%] rounded-full bg-[#5C5470]/20 blur-[80px]" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-[80%] rounded-full bg-[radial-gradient(circle,rgba(92,84,112,0.2)_0%,transparent_70%)]" />
         </div>
 
         {/* 1. Base portrait image */}

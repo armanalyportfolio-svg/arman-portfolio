@@ -42,7 +42,7 @@ export default function Testimonials() {
   return (
     <section id="testimonials" className="py-20 md:py-28 bg-[var(--bg-deep)] relative overflow-hidden">
       <SymbioteDivider from="surface" />
-      <div className="absolute bottom-20 right-0 w-72 h-72 rounded-full bg-[#352F44] opacity-25 blur-[100px]" />
+      <div className="absolute bottom-20 right-0 w-72 h-72 rounded-full bg-[radial-gradient(circle,#352F44_0%,transparent_70%)] opacity-25" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}

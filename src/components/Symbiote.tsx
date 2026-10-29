@@ -105,7 +105,7 @@ export function SymbioteBlob({ className = "" }: { className?: string }) {
     <svg
       aria-hidden="true"
       viewBox="0 0 400 400"
-      className={`symbiote-blob pointer-events-none ${className}`}
+      className={`symbiote-blob pointer-events-none hidden md:block ${className}`}
     >
       <defs>
         <filter id={filterId}>

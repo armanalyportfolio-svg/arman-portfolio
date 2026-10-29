@@ -79,8 +79,8 @@ export default function Contact() {
       <SymbioteDivider from="deep" />
       <SymbioteBlob className="absolute -bottom-28 -left-24 w-[380px] opacity-50 z-0" />
       {/* Background ambient glow */}
-      <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-[#2A2438] opacity-30 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full bg-[#5C5470] opacity-15 blur-[80px] pointer-events-none" />
+      <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-[radial-gradient(circle,#2A2438_0%,transparent_70%)] opacity-30 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full bg-[radial-gradient(circle,#5C5470_0%,transparent_70%)] opacity-15 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
